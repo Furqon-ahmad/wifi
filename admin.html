@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Panel Admin</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container" id="loginSection">
+    <h2>Masukkan Kode Admin</h2>
+    <input type="password" id="adminCode" placeholder="Kode Admin">
+    <button onclick="checkCode()">Masuk</button>
+    <p id="loginMessage"></p>
+  </div>
+
+  <div class="container" id="adminSection" style="display:none;">
+    <h2>Panel Admin</h2>
+    <table id="userTable">
+      <thead>
+        <tr><th>Email</th><th>Status</th><th>Aksi</th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <p><a href="index.html">Kembali ke halaman utama</a></p>
+  </div>
+
+  <script>
+    const correctCode = "230602";
+
+    function checkCode() {
+      const inputCode = document.getElementById('adminCode').value;
+      if (inputCode === correctCode) {
+        document.getElementById('loginSection').style.display = 'none';
+        document.getElementById('adminSection').style.display = 'block';
+        loadUsers();
+      } else {
+        document.getElementById('loginMessage').textContent = 'Kode salah.';
+      }
+    }
+
+    function loadUsers() {
+      const users = JSON.parse(localStorage.getItem('wifiUsers') || '[]');
+      const tableBody = document.querySelector('#userTable tbody');
+      tableBody.innerHTML = '';
+      users.forEach((user, index) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${user.email}</td>
+          <td>${user.status}</td>
+          <td>
+            <button onclick="updateStatus(${index}, 'approved')">Setujui</button>
+            <button onclick="updateStatus(${index}, 'rejected')">Tolak</button>
+          </td>
+        `;
+        tableBody.appendChild(tr);
+      });
+    }
+
+    function updateStatus(index, status) {
+      const users = JSON.parse(localStorage.getItem('wifiUsers') || '[]');
+      users[index].status = status;
+      localStorage.setItem('wifiUsers', JSON.stringify(users));
+      loadUsers();
+    }
+  </script>
+</body>
+</html>
