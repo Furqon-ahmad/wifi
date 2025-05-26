@@ -28,34 +28,38 @@
   </div>
 
   <script>
-    const registerForm = document.getElementById('register-form');
-    const statusForm = document.getElementById('status-form');
-    const messageDiv = document.getElementById('message');
+  const registerForm = document.getElementById('register-form');
+  const statusForm = document.getElementById('status-form');
+  const messageDiv = document.getElementById('message');
 
-    registerForm.addEventListener('submit', function (e) {
-      e.preventDefault();
-      const email = document.getElementById('email').value.trim().toLowerCase();
-      let users = JSON.parse(localStorage.getItem('wifiUsers') || '[]');
-      if (users.find((u) => u.email === email)) {
-        messageDiv.textContent = 'Email sudah terdaftar.';
-        return;
-      }
-      users.push({ email, status: 'pending' });
-      localStorage.setItem('wifiUsers', JSON.stringify(users));
-      messageDiv.textContent = 'Pendaftaran berhasil. Menunggu persetujuan admin.';
-    });
+  registerForm.addEventListener('submit', function (e) {
+    e.preventDefault();
+    const email = document.getElementById('email').value.trim().toLowerCase();
+    let users = JSON.parse(localStorage.getItem('wifiUsers') || '[]');
+    if (users.find((u) => u.email === email)) {
+      messageDiv.textContent = 'Email sudah terdaftar.';
+      return;
+    }
+    users.push({ email, status: 'pending' });
+    localStorage.setItem('wifiUsers', JSON.stringify(users));
+    messageDiv.textContent = 'Pendaftaran berhasil. Menunggu persetujuan admin.';
+  });
 
-    statusForm.addEventListener('submit', function (e) {
-      e.preventDefault();
-      const email = document.getElementById('status-email').value.trim().toLowerCase();
-      let users = JSON.parse(localStorage.getItem('wifiUsers') || '[]');
-      const user = users.find((u) => u.email === email);
-      if (!user) {
-        messageDiv.textContent = 'Email belum terdaftar.';
+  statusForm.addEventListener('submit', function (e) {
+    e.preventDefault();
+    const email = document.getElementById('status-email').value.trim().toLowerCase();
+    let users = JSON.parse(localStorage.getItem('wifiUsers') || '[]');
+    const user = users.find((u) => u.email === email);
+    if (!user) {
+      messageDiv.textContent = 'Email belum terdaftar.';
+    } else {
+      if (user.status === 'approved') {
+        messageDiv.innerHTML = 'Status: Disetujui<br><strong>Password WiFi: cacingalaska</strong>';
       } else {
         messageDiv.textContent = 'Status: ' + user.status;
       }
-    });
-  </script>
+    }
+  });
+</script>
 </body>
 </html>
